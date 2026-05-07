@@ -17,7 +17,7 @@ from tth_hash import (
 
 
 st.set_page_config(
-    page_title="TTH Hashing",
+    page_title="Student 2 - TTH Hashing",
     page_icon="🔐",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -197,7 +197,6 @@ def render_protocol_notes() -> None:
             "The relevant hash property is preimage resistance: knowing TTH(N2) "
             "should not let someone reconstruct the original N2."
         )
-
 
 st.title("TTH Hashing and Codes")
 st.caption("Generate N1/N2 codes and compute TTH(N2).")
