@@ -1,22 +1,3 @@
-"""
-admin.py - Administrator Server
-================================
-Project : Applied Cryptography for Electronic Voting
-ENSTA Alger - Ms. KHERROUBI - February 2026
-Student 4 : Administrator + Anonymizer
-
-Role of the Administrator :
-  - Verify voting rights by checking N1 with the Commissioner
-  - Blind-sign ballots WITHOUT ever seeing their content
-  - Refuse to sign if the voter's N1 is invalid or already used
-  - Never learn N2 — blind signature preserves voter anonymity
-
-Security guarantee :
-  The Admin sees only the masked ballot m' = m * k^e (mod N).
-  Because k is chosen secretly by the voter, the Admin cannot
-  determine m (the real vote + N2 combination).
-"""
-
 from __future__ import annotations
 
 import math
@@ -31,33 +12,7 @@ logger = logging.getLogger("AdminServer")
 
 
 class AdminServer:
-    """
-    Administrator Server — blind-signature authority.
-
-    Parameters
-    ----------
-    e : int  RSA public exponent
-    N : int  RSA modulus
-    d : int  RSA private exponent (kept secret)
-
-    Attributes
-    ----------
-    public_key  : (e, N) — shared publicly
-    private_key : d      — never exposed
-    valid_n1    : set of N1 codes currently allowed to vote
-    _signed_count : number of ballots blind-signed so far
-    """
-
-    def __init__(self, e: int, N: int, d: int) -> None:
-        if not (isinstance(e, int) and isinstance(N, int) and isinstance(d, int)):
-            raise TypeError("RSA parameters e, N, d must be integers.")
-        # Quick sanity check: e·d ≡ 1 (mod φ) is hard to verify without φ,
-        # but we can at least check that (m^e)^d = m for a small m.
-        self.public_key  = (e, N)
-        self.private_key = d
-        self.valid_n1: set[str] = set()
-        self._signed_count      = 0
-        logger.info(f"AdminServer initialised  public_key=({e}, {N})")
+   
 
     # ── N1 management ─────────────────────────────────────────────────────────
 
@@ -81,22 +36,7 @@ class AdminServer:
     # ── Blind signature ───────────────────────────────────────────────────────
 
     def blind_sign(self, m_masked: int) -> int:
-        """
-        Sign the blinded ballot without knowing the original message.
-
-        Formula: m'' = (m')^d  mod N
-
-        The Admin only sees the masked message m' = m · k^e (mod N).
-        Without knowing the voter's secret k, the Admin cannot infer m.
-
-        Parameters
-        ----------
-        m_masked : int  The blinded message m' sent by the voter.
-
-        Returns
-        -------
-        int  The blind signature m''.
-        """
+       
         e, N = self.public_key
         if not (0 <= m_masked < N):
             raise ValueError(

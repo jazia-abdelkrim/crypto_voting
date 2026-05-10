@@ -1,8 +1,4 @@
-# Student 3 Report — Electoral Commissioner
-**Project: Applied Cryptography for Electronic Voting**
-ENSTA Alger · Ms. KHERROUBI · February 2026
 
----
 
 ## 1. Role of the Commissioner in the Protocol
 

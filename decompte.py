@@ -1,24 +1,3 @@
-"""
-decompte.py - Electoral Counter (Tallying Server)
-==================================================
-Project : Applied Cryptography for Electronic Voting
-ENSTA Alger - Ms. KHERROUBI - February 2026
-Student 5 : Counter + Final Integration
-
-Role of the Counter :
-  - Hold the RSA private key for decrypting ballots
-  - Receive encrypted ballots from the Anonymizer
-  - Verify the Admin's blind signature on each ballot
-  - Ask the Commissioner to validate each N2 via TTH
-  - Tally and publish the final results
-  - Publish (N2, vote) pairs so each voter can verify their own vote
-
-Usage :
-  python decompte.py --action decrypt  --ballot 343 --sig 54
-  python decompte.py --action tally
-  python decompte.py --action results
-"""
-
 from __future__ import annotations
 
 import json
@@ -29,9 +8,9 @@ from datetime import datetime
 from dataclasses import dataclass, asdict
 
 
-# ─────────────────────────────────────────────
+
 # Configuration  (matches commissaire.py + rsa.py)
-# ─────────────────────────────────────────────
+
 
 COUNTER_N   = 583          # RSA modulus  583 = 11 × 53
 COUNTER_E   = 3            # public exponent
@@ -48,9 +27,9 @@ RESULTS_FILE  = DATA_DIR / "tally_results.json"
 LOG_FILE      = DATA_DIR / "counter.log"
 
 
-# ─────────────────────────────────────────────
+
 # Logging
-# ─────────────────────────────────────────────
+
 
 def log(message: str) -> None:
     ts    = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -61,9 +40,9 @@ def log(message: str) -> None:
         fh.write(entry + "\n")
 
 
-# ─────────────────────────────────────────────
+
 # RSA helpers (self-contained, no import of rsa.py)
-# ─────────────────────────────────────────────
+
 
 def _rsa(base: int, exp: int, mod: int) -> int:
     """Python's built-in modular exponentiation (fast, constant-time)."""
@@ -84,9 +63,9 @@ def verify_admin_signature(message: int, signature: int) -> bool:
     return recovered == (message % ADMIN_N)
 
 
-# ─────────────────────────────────────────────
+
 # Persistence
-# ─────────────────────────────────────────────
+
 
 def _read_json(path: Path, default):
     if path.exists():
@@ -117,9 +96,9 @@ def save_results(results: dict) -> None:
     _write_json(RESULTS_FILE, results)
 
 
-# ─────────────────────────────────────────────
+
 # Core actions
-# ─────────────────────────────────────────────
+
 
 def receive_ballot(encrypted_vote: int, signature: int, n2: str | None = None) -> dict:
     """
@@ -289,9 +268,9 @@ def _print_results(results: dict) -> None:
     print()
 
 
-# ─────────────────────────────────────────────
+
 # Programmatic API  (used by main.py)
-# ─────────────────────────────────────────────
+
 
 class Counter:
     """
@@ -323,9 +302,9 @@ class Counter:
         return (COUNTER_E, COUNTER_N)
 
 
-# ─────────────────────────────────────────────
+
 # CLI
-# ─────────────────────────────────────────────
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(

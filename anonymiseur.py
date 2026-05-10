@@ -1,25 +1,3 @@
-"""
-anonymiseur.py - Anonymizer Server (Ballot Box)
-================================================
-Project : Applied Cryptography for Electronic Voting
-ENSTA Alger - Ms. KHERROUBI - February 2026
-Student 4 : Administrator + Anonymizer
-
-Role of the Anonymizer :
-  - Act as the physical ballot box: accept (N1, encrypted_vote, signature)
-  - Verify N1 with the Commissioner before accepting the vote
-  - Strike N1 from the Commissioner's list (one vote per person)
-  - Store ONLY (encrypted_vote, signature) — identity is immediately discarded
-  - Forward the anonymous ballot list to the Counter for tallying
-
-Security guarantees :
-  • The Anonymizer never knows N2  → cannot reconstruct the vote.
-  • The vote is encrypted with the Counter's public key  → cannot read it.
-  • Random padding bits in the ballot prevent linking the encrypted ballot
-    to the decrypted result (in a production system).
-  • Once N1 is struck, the voter cannot vote twice.
-"""
-
 from __future__ import annotations
 
 import logging
@@ -46,19 +24,7 @@ class AnonymousBallot:
 
 
 class AnonymizerServer:
-    """
-    Anonymizer Server — the digital ballot box.
-
-    Attributes
-    ----------
-    ballot_box : list of AnonymousBallot
-        Ordered list of accepted, anonymous ballots.
-    used_n1    : set of str
-        N1 codes that have already been used this session.
-        Provides a local cache; the authoritative struck list lives at the Commissioner.
-    _rejected  : int
-        Count of rejected vote attempts (for statistics).
-    """
+ 
 
     def __init__(self) -> None:
         self.ballot_box: list[AnonymousBallot] = []
@@ -75,28 +41,7 @@ class AnonymizerServer:
         signature:             int,
         commissioner_valid_n1: set[str],
     ) -> tuple[bool, str]:
-        """
-        Accept or reject a vote submission.
-
-        Protocol:
-          1. Check n1 is in the Commissioner's valid-N1 set (voter is registered).
-          2. Check n1 has not been used before (no double voting).
-          3. Strike n1 from the Commissioner's set (in-place mutation of the set).
-          4. Cache n1 locally in used_n1.
-          5. Store (encrypted_vote, signature) anonymously — identity is dropped.
-
-        Parameters
-        ----------
-        n1                    : voter's identification code
-        encrypted_vote        : vote encrypted with Counter's public key
-        signature             : Admin's blind signature on the ballot
-        commissioner_valid_n1 : mutable set owned by the Commissioner; will be mutated
-
-        Returns
-        -------
-        (True,  success_message) on acceptance
-        (False, rejection_reason) on rejection
-        """
+       
         n1 = n1.upper()
 
         # Guard 1 — voter must be registered and not yet struck

@@ -1,10 +1,3 @@
-"""
-Student 2 - Hachage et codes N1/N2 for the electronic voting project.
-
-This module generates personal voting codes, computes a pedagogical TTH
-fingerprint for N2, and exports the public data that the commissioner needs.
-"""
-
 from __future__ import annotations
 
 import hashlib
