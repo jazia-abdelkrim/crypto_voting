@@ -1,25 +1,3 @@
-"""
-commissaire.py - Electoral Commissioner Server
-===============================================
-Project : Applied Cryptography for Electronic Voting
-ENSTA Alger - Ms. KHERROUBI - February 2026
-Student 3 : Commissioner + Election Preparation
-
-Role of the Commissioner :
-  - Generate and distribute N1 and N2 codes to voters
-  - Keep the list of valid N1 codes (to verify voting rights)
-  - Store ONLY the TTH(N2) hash digests — never the real N2 values
-  - Strike out N1 after the voter has cast their vote (one vote per person)
-  - Validate TTH(N2) during the vote counting phase
-
-Usage :
-  python commissaire.py --action init --nb_voters 5
-  python commissaire.py --action verify_n1 --n1 AF15GH258ZQP
-  python commissaire.py --action strike_n1 --n1 AF15GH258ZQP
-  python commissaire.py --action verify_tth --n2 BK37MN496YRX
-  python commissaire.py --action status
-"""
-
 import os
 import sys
 import json
@@ -31,9 +9,9 @@ from pathlib import Path
 from datetime import datetime
 
 
-# ─────────────────────────────────────────────
+
 # Configuration
-# ─────────────────────────────────────────────
+
 
 DATA_DIR       = Path("commissioner_data")
 N1_LIST_FILE   = DATA_DIR / "n1_list.json"       # {n1: "valid" | "struck"}
@@ -44,9 +22,7 @@ CODE_LENGTH = 12                                  # length of N1 and N2 codes
 CODE_CHARS  = string.ascii_uppercase + string.digits  # A-Z + 0-9
 
 
-# ─────────────────────────────────────────────
 # Logging utilities
-# ─────────────────────────────────────────────
 
 def log(message: str):
     """Write a timestamped message to the log file and stdout."""
@@ -58,9 +34,9 @@ def log(message: str):
         f.write(entry + "\n")
 
 
-# ─────────────────────────────────────────────
+
 # Code generation
-# ─────────────────────────────────────────────
+
 
 def generate_code() -> str:
     """
@@ -81,9 +57,9 @@ def generate_code_pair() -> tuple[str, str]:
     return n1, n2
 
 
-# ─────────────────────────────────────────────
+
 # TTH Hash (Toy Tetragraph Hash - simplified)
-# ─────────────────────────────────────────────
+
 
 def tth_hash(code: str) -> str:
     """
@@ -103,9 +79,9 @@ def tth_hash(code: str) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-# ─────────────────────────────────────────────
+
 # Persistence (JSON read / write)
-# ─────────────────────────────────────────────
+
 
 def _read_json(path: Path, default):
     if path.exists():
@@ -136,9 +112,9 @@ def save_tth_list(tth_list: list):
     _write_json(TTH_LIST_FILE, tth_list)
 
 
-# ─────────────────────────────────────────────
+
 # Main actions
-# ─────────────────────────────────────────────
+
 
 def initialize_election(nb_voters: int):
     """
@@ -285,9 +261,9 @@ def display_status():
     print()
 
 
-# ─────────────────────────────────────────────
+
 # Programmatic API (for main.py integration)
-# ─────────────────────────────────────────────
+
 
 class Commissioner:
     """
@@ -324,9 +300,8 @@ class Commissioner:
         return load_n1_list()
 
 
-# ─────────────────────────────────────────────
+
 # Command-line interface
-# ─────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(

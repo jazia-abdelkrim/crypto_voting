@@ -12,7 +12,7 @@ anonymizer = AnonymizerServer()
 VALID_N1_LIST = ["AF15GH258ZQP", "BK37MN496YRX", "TEST001CODE123"]
 admin.load_valid_n1(VALID_N1_LIST)
 
-print("🔐 Keys Loaded | 📋 N1 List Ready\n")
+print(" Keys Loaded |  N1 List Ready\n")
 
 def simulate_voter(n1, vote_value, n2_code):
     print(f"--- Voter starts: N1={n1}, Vote={vote_value} ---")
@@ -53,6 +53,6 @@ simulate_voter("AF15GH258ZQP", 7, "14")
 simulate_voter("BK37MN496YRX", 9, "22")
 simulate_voter("AF15GH258ZQP", 5, "99")  
 
-print("📊 Final Anonymous Ballot Box:")
+print(" Final Anonymous Ballot Box:")
 for i, ballot in enumerate(anonymizer.get_ballots_for_counter(), 1):
     print(f"Ballot {i}: Encrypted={ballot['encrypted_vote']}, Sig={ballot['signature']}")

@@ -1,22 +1,3 @@
-"""
-main.py - Complete Electronic Voting System Integration
-=======================================================
-Project : Applied Cryptography for Electronic Voting
-ENSTA Alger - Ms. KHERROUBI - February 2026
-Student 5 : Integration + Final Demo
-
-This file orchestrates all four servers:
-  Commissioner  →  manages N1 list and TTH(N2) digests
-  Administrator →  verifies voting rights + blind-signs ballots
-  Anonymizer    →  accepts votes, strips identity
-  Counter       →  decrypts, verifies, tallies
-
-Run:
-    python main.py
-    python main.py --voters 3
-    python main.py --voters 5 --votes "7,8,7,9,7"
-"""
-
 from __future__ import annotations
 
 import math
@@ -32,17 +13,16 @@ from decompte      import Counter
 from tth_hash      import create_voter_codes, tth_hash, normalize_code
 
 
-# ─────────────────────────────────────────────
+
 # Fixed RSA parameters (match the exercises)
-# ─────────────────────────────────────────────
+
 
 ADMIN_E, ADMIN_N, ADMIN_D = 27, 55, 3    # Exercise 2 keys
 COUNTER_E, COUNTER_N      = 3,  583      # Exercise 4 keys
 
 
-# ─────────────────────────────────────────────
 # Helpers
-# ─────────────────────────────────────────────
+
 
 def _blind_signature_protocol(
     message: int,
@@ -83,9 +63,9 @@ def _build_ballot_message(vote_value: int, n2_str: str, admin_N: int) -> int:
     return (vote_value * 1000 + n2_num) % admin_N
 
 
-# ─────────────────────────────────────────────
+
 # Main voting flow
-# ─────────────────────────────────────────────
+
 
 def run_election(nb_voters: int = 5, vote_values: list[int] | None = None) -> None:
     """
@@ -110,9 +90,9 @@ def run_election(nb_voters: int = 5, vote_values: list[int] | None = None) -> No
         if Path(folder).exists():
             shutil.rmtree(folder)
 
-    # ══════════════════════════════════════════════
+  
     # PHASE 0 — Server initialisation
-    # ══════════════════════════════════════════════
+   
     _section("PHASE 0 · Server Initialisation")
 
     commissioner = Commissioner()
@@ -125,9 +105,9 @@ def run_election(nb_voters: int = 5, vote_values: list[int] | None = None) -> No
     print(f"  Counter public key  : (e={COUNTER_E}, N={COUNTER_N})")
     print()
 
-    # ══════════════════════════════════════════════
+    
     # PHASE 1 — Election preparation (Commissioner)
-    # ══════════════════════════════════════════════
+    
     _section("PHASE 1 · Election Preparation")
 
     # Generate voter codes with tth_hash module
@@ -149,9 +129,9 @@ def run_election(nb_voters: int = 5, vote_values: list[int] | None = None) -> No
         print(f"    {rec.voter_id}  N1={rec.n1}  N2={rec.n2}  TTH={rec.tth_n2[:20]}...")
     print()
 
-    # ══════════════════════════════════════════════
+   
     # PHASE 2 — Voting
-    # ══════════════════════════════════════════════
+    
     _section("PHASE 2 · Voters Cast Their Ballots")
 
     for idx, rec in enumerate(voter_records):
@@ -190,9 +170,9 @@ def run_election(nb_voters: int = 5, vote_values: list[int] | None = None) -> No
         # 2f – Counter stores the ballot (with N2 for later TTH check)
         counter.receive_ballot(enc_vote, sig, n2=rec.n2)
 
-    # ══════════════════════════════════════════════
+   
     # PHASE 3 — Tallying
-    # ══════════════════════════════════════════════
+    
     _section("PHASE 3 · Tallying (Counter + Commissioner)")
 
     # Build the TTH list the Commissioner holds
@@ -219,9 +199,9 @@ def run_election(nb_voters: int = 5, vote_values: list[int] | None = None) -> No
     print(f"  Result: {'BLOCKED ✓' if not success else 'LEAKED — bug!'}")
 
 
-# ─────────────────────────────────────────────
+
 # Formatting helpers
-# ─────────────────────────────────────────────
+
 
 def _banner(text: str) -> None:
     line = "═" * 60
@@ -240,10 +220,10 @@ def _subsection(title: str) -> None:
     print(f"\n  ── {title} ──")
 
 
-# ─────────────────────────────────────────────
+
 # Commissioner thin wrapper
 # (commissaire.py uses file I/O; we patch it for in-memory demo)
-# ─────────────────────────────────────────────
+
 
 class Commissioner:          # noqa: F811  (shadow the import for in-memory use)
     """Thin in-memory Commissioner for main.py integration."""
@@ -269,9 +249,9 @@ class Commissioner:          # noqa: F811  (shadow the import for in-memory use)
         return self._tth_list
 
 
-# ─────────────────────────────────────────────
+
 # Entry point
-# ─────────────────────────────────────────────
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(

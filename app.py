@@ -1,14 +1,3 @@
-"""
-app.py - Complete Electronic Voting System — Streamlit Dashboard
-================================================================
-Project : Applied Cryptography for Electronic Voting
-ENSTA Alger - Ms. KHERROUBI - February 2026
-Student 5 : Integration + UI
-
-Integrates work from all 5 students into a single interactive demo.
-Run: streamlit run app.py
-"""
-
 from __future__ import annotations
 
 import json
@@ -18,9 +7,9 @@ import secrets
 import string
 import streamlit as st
 
-# ─────────────────────────────────────────────
+
 # Page config
-# ─────────────────────────────────────────────
+
 
 st.set_page_config(
     page_title="CryptoVote — ENSTA Alger",
@@ -106,9 +95,9 @@ code { color: #a7f3d0; }
 """, unsafe_allow_html=True)
 
 
-# ─────────────────────────────────────────────
+
 # RSA helpers (Student 1)
-# ─────────────────────────────────────────────
+
 
 ADMIN_E, ADMIN_N, ADMIN_D = 27, 55, 3
 COUNTER_E, COUNTER_N      = 3, 583
@@ -149,9 +138,9 @@ def blind_protocol(message, k, e, N, d):
             "verified": pow(s, e, N) == message % N}
 
 
-# ─────────────────────────────────────────────
+
 # TTH helpers (Student 2)
-# ─────────────────────────────────────────────
+
 
 def generate_code():
     return "".join(secrets.choice(CODE_ALPHABET) for _ in range(CODE_LENGTH))
@@ -192,9 +181,9 @@ def create_voter(voter_id):
             "tth_n2": tth_hash(n2), "sha256_n2": sha256_fingerprint(n2)}
 
 
-# ─────────────────────────────────────────────
+
 # Voting helpers (Students 3-5)
-# ─────────────────────────────────────────────
+
 
 def build_message(vote_val, n2_str):
     try: n2_num = int(str(n2_str)[:2])
@@ -225,7 +214,7 @@ def simulate_full_vote(voters, vote_assignments):
             entry["result"] = "rejected"
             log.append(entry)
             continue
-        entry["steps"].append({"label": "N1 check", "status": "✅ approved"})
+        entry["steps"].append({"label": "N1 check", "status": " approved"})
 
         # 2 – build message
         m = build_message(vote_val, n2)
@@ -236,7 +225,7 @@ def simulate_full_vote(voters, vote_assignments):
         while _gcd(k, ADMIN_N) != 1: k += 1
         proto = blind_protocol(m, k, ADMIN_E, ADMIN_N, ADMIN_D)
         sig = proto["s"]
-        entry["steps"].append({"label": f"Blind sign → s = {sig}", "status": "✅ valid" if proto["verified"] else "❌ invalid"})
+        entry["steps"].append({"label": f"Blind sign → s = {sig}", "status": " valid" if proto["verified"] else " invalid"})
 
         # 4 – encrypt
         enc = rsa_encrypt(vote_val, COUNTER_E, COUNTER_N)
@@ -267,9 +256,9 @@ def simulate_full_vote(voters, vote_assignments):
     return log, tally, audit
 
 
-# ─────────────────────────────────────────────
+
 # Session state init
-# ─────────────────────────────────────────────
+
 
 def _init():
     if "voters" not in st.session_state:
@@ -286,9 +275,9 @@ def _init():
 _init()
 
 
-# ─────────────────────────────────────────────
+
 # Sidebar
-# ─────────────────────────────────────────────
+
 
 with st.sidebar:
     st.markdown("## 🗳️ CryptoVote")
@@ -296,8 +285,8 @@ with st.sidebar:
     st.divider()
     page = st.radio(
         "Navigation",
-        ["🏠 Overview", "📐 RSA & Blind Sig", "🔐 TTH Hashing",
-         "⚡ Live Election", "📊 Results & Audit"],
+        [" Overview", " RSA & Blind Sig", " TTH Hashing",
+         " Live Election", " Results & Audit"],
         label_visibility="collapsed",
     )
     st.divider()
@@ -306,11 +295,11 @@ with st.sidebar:
     st.code(f"Counter: e={COUNTER_E}, N={COUNTER_N}", language="text")
 
 
-# ─────────────────────────────────────────────
-# PAGE 1 — Overview
-# ─────────────────────────────────────────────
 
-if page == "🏠 Overview":
+# PAGE 1 — Overview
+
+
+if page == " Overview":
     st.title("Cryptography Applied to Electronic Voting")
     st.caption("ENSTA Alger · Applied Cryptography Project · February 2026")
 
@@ -366,7 +355,7 @@ if page == "🏠 Overview":
 # PAGE 2 — RSA & Blind Signature
 # ─────────────────────────────────────────────
 
-elif page == "📐 RSA & Blind Sig":
+elif page == " RSA & Blind Sig":
     st.title("RSA & Blind Signature — Student 1")
 
     tab_ex1, tab_ex2, tab_ex4 = st.tabs(["Exercise 1 — Proof", "Exercise 2 — Demo", "Exercise 4 — Vote"])
@@ -417,7 +406,7 @@ elif page == "📐 RSA & Blind Sig":
             df_data = [{"Step": r[0], "Formula": r[1], "Result": r[2]} for r in rows]
             st.dataframe(df_data, use_container_width=True, hide_index=True)
             box = "success-box" if p["verified"] else "error-box"
-            icon = "✅" if p["verified"] else "❌"
+            icon = "" if p["verified"] else ""
             st.markdown(f'<div class="{box}">{icon} Signature valid: s^e mod N = {pow(p["s"],ADMIN_E,ADMIN_N)} = m = {m_val}</div>', unsafe_allow_html=True)
 
     with tab_ex4:
@@ -431,14 +420,14 @@ elif page == "📐 RSA & Blind Sig":
         c2.metric(f"Encrypted = {vote_ex4}³ mod 583", enc4)
         c3.metric(f"Decrypted = {enc4}^347 mod 583", dec4)
         if dec4 == vote_ex4:
-            st.markdown('<div class="success-box">✅ Encryption → Decryption round-trip verified!</div>', unsafe_allow_html=True)
+            st.markdown('<div class="success-box"> Encryption → Decryption round-trip verified!</div>', unsafe_allow_html=True)
 
 
-# ─────────────────────────────────────────────
+
 # PAGE 3 — TTH Hashing
-# ─────────────────────────────────────────────
 
-elif page == "🔐 TTH Hashing":
+
+elif page == " TTH Hashing":
     st.title("TTH Hashing & Voter Codes — Student 2")
 
     tab_hash, tab_gen = st.tabs(["Hash a Code", "Generate Voter Codes"])
@@ -450,7 +439,7 @@ elif page == "🔐 TTH Hashing":
         valid = validate_code(norm)
         c1, c2 = st.columns(2)
         c1.metric("Normalized", norm or "empty")
-        c2.metric("Status", "Valid ✅" if valid else "Invalid ❌")
+        c2.metric("Status", "Valid " if valid else "Invalid ")
 
         if valid:
             tth = tth_hash(norm)
@@ -503,11 +492,11 @@ elif page == "🔐 TTH Hashing":
                                file_name="voter_codes.json", mime="application/json")
 
 
-# ─────────────────────────────────────────────
-# PAGE 4 — Live Election
-# ─────────────────────────────────────────────
 
-elif page == "⚡ Live Election":
+# PAGE 4 — Live Election
+
+
+elif page == " Live Election":
     st.title("Live Election Simulation")
 
     st.markdown("""
@@ -570,7 +559,7 @@ elif page == "⚡ Live Election":
 
         # ── Double-vote test ─────────────────────────────────────────────────
         if attack and voters:
-            st.subheader("🔒 Double-Vote Attack")
+            st.subheader(" Double-Vote Attack")
             v0 = voters[0]
             # Commissioner already struck N1, so Anonymizer will reject
             used = {v0["n1"]}
@@ -584,7 +573,7 @@ elif page == "⚡ Live Election":
 
             # Simulate anonymizer check
             blocked = v0["n1"] in used
-            icon    = "✅ BLOCKED" if blocked else "❌ PASSED (bug!)"
+            icon    = " BLOCKED" if blocked else " PASSED (bug!)"
             st.markdown(f'<div class="{"success-box" if blocked else "error-box"}">'
                         f'{icon}: Re-vote attempt by {v0["voter_id"]} was {"rejected by Anonymizer" if blocked else "accepted — error!"}'
                         f'</div>', unsafe_allow_html=True)
@@ -593,11 +582,11 @@ elif page == "⚡ Live Election":
         st.info("Configure the election above and click **Run Election** to begin.")
 
 
-# ─────────────────────────────────────────────
-# PAGE 5 — Results & Audit
-# ─────────────────────────────────────────────
 
-elif page == "📊 Results & Audit":
+# PAGE 5 — Results & Audit
+
+
+elif page == " Results & Audit":
     st.title("Results & Public Audit")
 
     if not st.session_state.election_done:
@@ -618,7 +607,7 @@ elif page == "📊 Results & Audit":
 
     if tally:
         winner = max(tally, key=tally.get)
-        st.markdown(f'<div class="success-box">🏆 Most popular vote: <strong>{winner}</strong> ({tally[winner]} vote(s))</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="success-box"> Most popular vote: <strong>{winner}</strong> ({tally[winner]} vote(s))</div>', unsafe_allow_html=True)
         bars = {str(k): v for k, v in sorted(tally.items())}
         st.bar_chart(bars, color="#8BD600")
     else:
@@ -639,7 +628,7 @@ elif page == "📊 Results & Audit":
             "N2 (public)": b["n2"],
             "Encrypted":   b["enc_vote"],
             "Decrypted":   b["decrypted"],
-            "Sig valid":   "✅" if b["valid"] else "❌",
+            "Sig valid":   "" if b["valid"] else "",
             "Status":      "counted" if b["valid"] else "rejected",
         })
     st.dataframe(audit_rows, use_container_width=True, hide_index=True)
